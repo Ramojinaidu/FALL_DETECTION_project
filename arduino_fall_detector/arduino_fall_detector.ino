@@ -1,21 +1,21 @@
 /*
-///////////////////////////////////////////////
-**********COMMUNITY SERVICE PROJECT************
+/////////////////////////////////////////////////////////////////////////////////////////
+***************************COMMUNITY SERVICE PROJECT********************************
     
-      project_name      : Fall-detection Using arduino and esp32
-      project_guide     :
-      project_members   :         Name                                   Roll-Number
-                          1)
-                          2)
-                          3)
-                          4)
-                          5)
+      Project_name      : Fall-detection Using arduino
+      Project_guide     : 
+      Project_members   :     Name                                       Roll-Number
+                          1) M.Harshith                 -                23021A0429
+                          2) G.Ravi Kumar               -                23021A0417
+                          3) P.Sai Saran                -                23021A0436
+                          4) M.Pavani                   -                23021A0432
+                          5) Varshini                   -                24021A0459
 
-      branch            : Electronics And Communication Engineering
-      course            : B-Tech
-      year              : 
+      Branch            : Electronics And Communication Engineering
+      Course            : B-Tech
+      Year              : 2nd year
 
-///////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 */
 
 
@@ -26,19 +26,16 @@
 #include <Wire.h>
 
 
-SoftwareSerial mySerial1(10, 11);           // Set up a new SoftwareSerial object with RX in digital pin 10 and TX in digital pin 11 for esp32
 SoftwareSerial mySerial2(3,2);              // Set up a new SoftwareSerial object with RX in digital pin 03 and TX in digital pin 02 for GSM module
 
-const float fallThreshold = 2.0; 
+const float fallThreshold = 2.0;            // Threashold values fall recognization
 const float gyroThreshold = 5.0; 
 
 Adafruit_MPU6050 mpu;
-
 sensors_event_t accel, gyro, temp;
 
 String message;
-
-String phone_number = "+919391259921";        // Enter the recipient's phone number
+String phone_number = "+ZZxxxxxxxxxx";        // Enter the recipient's phone number
 
 
 float sensor_data[6];
@@ -46,9 +43,7 @@ float sensor_data[6];
 void setup() {
                                               //Set the baud rate for the SerialSoftware objects  
                                               //    Device               Baud-rate
-  mySerial1.begin(9600);                      //     Esp32           -       9600                  
   mySerial2.begin(115200);                    //     GSM             -       115200
-  Serial.begin(115200);                       //     Seril-monitor   -       115200
                                               
   while(!mpu.begin())
      Serial.println("mpu6050 not connected"); //checking for mpu6050 connection
@@ -74,7 +69,7 @@ void loop() {
   float totalGyro = sqrt(pow(gyro.gyro.x, 2) + pow(gyro.gyro.y, 2) + pow(gyro.gyro.z, 2));
 
 
-
+//Condition for checking fall and sending Message and Call
   if (totalAcceleration > fallThreshold && totalGyro > gyroThreshold) {
 
 
@@ -90,12 +85,11 @@ void loop() {
 
 
     
-    if (mySerial1.isListening() || mySerial2.isListening()){
+    if (mySerial2.isListening()){
       delay(200);
       send_message(message);
       delay(200);
       send_call();
-
     }
 
 
@@ -105,37 +99,28 @@ void loop() {
 }
 
 
-void senddata(){
-   int i;
-   mySerial1.print("<");
-   for(i=0;i<sizeof(sensor_data)/sizeof(sensor_data[0]);i++){
-      mySerial1.print(sensor_data[i]);
-      mySerial1.print(",");
-    
-   }
-   mySerial1.print(">");
-}
 
-
+//send message
 void send_message(String message ){
 
-  mySerial2.println("AT+CMGF=1");
-  delay(200);                                        // Configuring TEXT mode
-  mySerial2.println("AT+CMGS=\"" + phone_number + "\"");   
-    delay(200);      
-  mySerial2.print(message);
-    delay(200);                                      //text content
+  mySerial2.println("AT+CMGF=1");                               // Configuring TEXT mode
+  delay(200);                                                     
+  mySerial2.println("AT+CMGS=\"" + phone_number + "\"");        // Configuring phone number
+  delay(200);      
+  mySerial2.print(message);                                     //sending text content
+  delay(200);                                                  
   mySerial2.write(26);
 
 
 }
 
+
+// send call
 void send_call(){
   delay(500);
-  mySerial2.println("AT+CMGF=0");                                // Configuring TEXT mode
+  mySerial2.println("AT+CMGF=0");                                 // Configuring CALL mode
   delay(200);
-  mySerial2.println("ATD" + phone_number + ";"); 
-
+  mySerial2.println("ATD" + phone_number + ";");                  //Sending Call
 }
 
 
