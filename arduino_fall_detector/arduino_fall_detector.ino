@@ -9,7 +9,7 @@
                           2) G.Ravi Kumar               -                23021A0417
                           3) P.Sai Saran                -                23021A0436
                           4) M.Pavani                   -                23021A0432
-                          5) Varshini                   -                24021A0459
+                          5) M.Varshini                 -                24025A0459
 
       Branch            : Electronics And Communication Engineering
       Course            : B-Tech
